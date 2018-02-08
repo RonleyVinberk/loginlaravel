@@ -17,7 +17,7 @@ class UserController extends Controller
         $data["email"] = Auth::user()->email;
         $data["users"] = UsersModel::all()->where('usertype', '!=', 1);
         return view('user', $data);
-    } 
+    }
 
     public function doLogout() {
         Auth::logout();
@@ -36,7 +36,7 @@ class UserController extends Controller
         );
 
         UsersModel::create($data);
-		return redirect('user')->with('success_input', 'Data berhasil disimpan. Terima kasih.');
+		    return redirect('user')->with('success_input', 'Data berhasil disimpan. Terima kasih.');
     }
 
     public function update($id, Request $request) {
@@ -85,9 +85,8 @@ class UserController extends Controller
     }
 
     public function edit($id) {
-        // $data["email"] = Auth::user()->email;
         $data["user"] = UsersModel::find($id);
 
-		return view('form', $data);
+		    return view('form', $data);
     }
 }
