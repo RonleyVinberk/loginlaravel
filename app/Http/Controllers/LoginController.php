@@ -13,49 +13,30 @@ class LoginController extends Controller
     public function index() {
         return view('login');
     }
-    //
-    public function doLogin(Request $request){
-        // validate the info, create rules for the inputs
+
+    public function doLogin(Request $request) {
+		$messages = array(
+			"required" => ":attribute tidak boleh kosong!",
+			"min:3" => ":attribute tidak boleh kurang dari 3",
+			"email" => ":attribute tidak valid. Silahkan coba kembali!"
+		);
+        // Validate the info, create rules for the inputs
         $rules = array(
-            'email'    => 'required|email', // make sure the email is an actual email
-            'password' => 'required|alphaNum|min:3' // password can only be alphanumeric and has to be greater than 3 characters
+            'email'    => 'required|email', // Make sure the email is an actual email
+            'password' => 'required|min:3' // Password can only be alphanumeric and has to be greater than 3 characters
         );
 
-        // run the validation rules on inputs from the form
-        $validator = Validator::make($request->all(), $rules);
-
+        // Run the validation rules on inputs from the form
+        $validator = Validator::make($request->only("email", "password"), $rules, $messages);
         if ($validator->fails()) {
-            return Redirect::to('/')
-                ->withErrors($validator) // send back all errors to the login form
-                ->withInput(Input::except('password')); // send back the input (not the password) so that we can repopulate the form
+            return redirect('/')->withErrors($validator)->withInput();
         } else {
-        
-            // create our user data for the authentication
-            $userdata = array(
-                'email'     => Input::get('email'),
-                'password'  => Input::get('password')
-            );
-
-            // print_r($userdata);
-            // exit;
-        
-            // attempt to do the login
-            if (Auth::attempt($userdata)) {
-        
-                // validation successful!
-                // redirect them to the secure section or whatever
-                // return Redirect::to('secure');
-                // for now we'll just echo success (even though echoing in a controller is bad)
-                // return redirect('/')->with('success_login', 'Login berhasil');
+            // Attempt to do the login
+            if (Auth::attempt($request->only("email", "password"))) {
                 return redirect('user');
-        
-            } else {        
-        
-                // validation not successful, send back to form 
-                return redirect('/')->with('failed_login', 'Login tidak berhasil');
-        
+            } else {
+                return redirect('/')->with('notification_error_login', 'Login tidak berhasil. Silahkan mencoba kembali!');
             }
-        
         }
     }
 }

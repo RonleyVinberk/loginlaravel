@@ -27,6 +27,12 @@
                 <div class="col-sm-12 col-md-3">
                     <!-- start col -->
 
+					@foreach($errors->all() as $message)
+					<div class="alert alert-warning">
+						{{$message}}
+					</div>
+					@endforeach
+
                     @if (session('failed_login'))
                         <div class="alert alert-warning">
                             {{ session('failed_login') }}
@@ -36,12 +42,12 @@
                     <form action="{{url("login")}}" method="post" class="form-signin" id="">
                         {{ csrf_field() }}
                         <label for="inputEmail" class="sr-only">Email address</label>
-                        <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus />
+                        <input type="text" name="email" id="inputEmail" class="form-control" placeholder="Email address" autofocus value="{{old('email')}}" />
                         <label for="inputPassword" class="sr-only">Password</label>
-                        <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required autocomplete="off" />
+                        <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" autocomplete="off" />
                         <button class="btn btn-lg btn-primary btn-block" type="submit">LOGIN</button>
                     </form>
-                    <div align="center"><small>&copy; 2018 CRUD Laravel | Created by Ronley Tsutomu Minoru Vinberk | Framework by Laravel</small></div>
+                    <div align="center"><footer>CRUD Laravel (Part 2) &copy; 2018 | Created by Ronley Vinberk | Framework by Laravel &amp; Bootstrap</footer></div>
 
                     <!-- end col -->
                 </div>

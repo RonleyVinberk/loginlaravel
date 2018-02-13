@@ -11,12 +11,26 @@
 		<!-- Datatables CSS -->
         <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css" />
         <title>CRUD Laravel</title>
+		<style media="screen">
+			.button {
+				display: -webkit-inline-box;
+			}
+		</style>
     </head>
     <body>
         <!-- start body -->
 
-        @include('sidebar')
-        @yield('content')
+		@include('sidebar')
+
+		<div class="container-fluid pt-3">
+			<!-- start container-fluid -->
+
+			@yield('user_blade')
+			@yield('form_edit')
+
+			<!-- end container-fluid -->
+		</div>
+
 
         <!-- Optional JavaScript -->
 

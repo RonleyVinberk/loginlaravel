@@ -23,4 +23,4 @@ Route::post('login', 'LoginController@doLogin');
 Route::get('/logout', 'UserController@doLogout');
 
 // Route Resource Page User
-Route::resource('user', 'UserController');
+Route::resource('user', 'UserController')->middleware('cek_login');

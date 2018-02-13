@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UsersModel extends Model
+class User extends Model
 {
     //
     protected $fillable = [
@@ -12,7 +12,7 @@ class UsersModel extends Model
     ];
     protected $table = "users";
     public $timestamps = false;
-    
+
     protected $hidden = [
         'password', 'remember_token',
     ];

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\UsersModel;
+use App\Models\User;
 use Hash;
 
 use Illuminate\Http\Request;
@@ -15,7 +15,7 @@ class UserController extends Controller
 {
     public function index(){
         $data["email"] = Auth::user()->email;
-        $data["users"] = UsersModel::all()->where('usertype', '!=', 1);
+        $data["users"] = User::all()->where('usertype', '!=', 1);
         return view('user', $data);
     }
 
@@ -24,69 +24,84 @@ class UserController extends Controller
         return redirect('/');
     }
 
-    public function store(Request $request) {
-        $password = $request->input('password_confirmation');
-        $hashed = Hash::make($password);
-        $data = array(
-            "name" => $request->input('name'),
-            "username" => $request->input('username'),
-            "email" => $request->input('email'),
-            "password" => $hashed,
-            "usertype" => 2
-        );
+	public function store(Request $request) {
+	    $messages = [
+	        'required' => ':attribute tidak boleh kosong!',
+	        'min:3' => ':attribute tidak boleh kurang dari 3',
+	        'email' => ':attribute tidak valid. Silahkan coba kembali!'
+	    ];
 
-        UsersModel::create($data);
-		    return redirect('user')->with('success_input', 'Data berhasil disimpan. Terima kasih.');
-    }
+	    $rules = [
+	        'name' => 'required',
+	        'username' => 'required',
+	        'email' => 'required|email',
+	        'password' => 'required|min:3'
+	    ];
 
-    public function update($id, Request $request) {
-        $rules = array(
-            'email'    => 'required|email', // make sure the email is an actual email
-            'password' => 'required|alphaNum|min:3|confirmed', // password can only be alphanumeric and has to be greater than 3 characters
-            'password_confirmation' => 'required'
-        );
+    	$inputData = $request->only('name', 'username', 'email', 'password');
 
-        // run the validation rules on inputs from the form
-        $validator = Validator::make($request->all(), $rules);
+    	// Lakukan validasi
+    	$validator = Validator::make($inputData, $rules, $messages);
 
+    	// Redirect jika gagal validasi
+	    if ($validator->fails()) {
+			return redirect('user')->withErrors($validator)->withInput();
+	    }
+
+	    $inputData['password'] = Hash::make($inputData['password']);
+	    $inputData['usertype'] = 2;
+
+	    if (!User::create($inputData)) {
+	        return back()->with('notification_error_store', 'Data gagal disimpan. Silahkan mencoba kembali! Terima kasih.');
+	    }
+
+    	return redirect('user')->with('notification_success_store', 'Data berhasil disimpan. Terima kasih.');
+	}
+
+    public function update(Request $request, User $user) {
+		$messages = [
+			'required' => ':attribute tidak boleh kosong!',
+	        'min:3' => ':attribute tidak boleh kurang dari 3',
+	        'email' => ':attribute tidak valid. Silahkan coba kembali!'
+		];
+
+        $rules = [
+			'name' => 'required',
+			'username' => 'required',
+			'email'    => 'required|email',
+			'password' => 'min:3|confirmed'
+		];
+
+		$dataUpdate = $request->only("name", "username", "email", "password_confirmation");
+
+        // Lakukan validasi
+        $validator = Validator::make($dataUpdate, $rules, $messages);
+
+        // Jika validasi gagal
         if ($validator->fails()) {
-            // Error Validation
-            $request->session()->flash('warning_ubah', 'Password tidak sama. Silahkan mencoba kembali. Terima kasih.');
-            return redirect()->back();
-        } else {
-            try {
-                $password = $request->input('password_confirmation');
-                $hashed = Hash::make($password);
-                $data = UsersModel::find($id);
-                $input = array(
-                    "name" => $request->input('name'),
-                    "username" => $request->input('username'),
-                    "email" => $request->input('email'),
-                    "password" => $hashed
-                );
-                $data->fill($input)->save();
-            } catch(Exception $e) {
-                // Error try... catch...
-            }
-
-            $request->session()->flash('success_ubah', 'Data berhasil diganti. Terima kasih.');
-            return redirect()->back();
+            return redirect()->back()->withErrors($validator)->withInput();
         }
+
+		$dataUpdate['password_confirmation'] = Hash::make($dataUpdate['password_confirmation']);
+	    $dataUpdate['usertype'] = 2;
+
+		if (!$user->update($dataUpdate)) {
+			return back()->with('notification_error_update', 'Data gagal diganti. Silahkan mencoba kembali! Terima kasih.');
+		}
+
+		return redirect('user')->with('notification_success_update', 'Data berhasil diganti. Terima kasih.');
     }
 
-    public function destroy($id) {
-        try {
-            $id = UsersModel::find($id);
-            $id->delete();
-        } catch(Exception $e) {
-            // Error try... catch...
-        }
-        return redirect('user')->with('success_delete', 'Data berhasil dihapus. Terima kasih.');
+    public function destroy(User $user) {
+		if ($user->delete()) {
+			return redirect('user')->with('notification_success_destroy', 'Data berhasil dihapus. Terima kasih.');
+		}
+        return redirect('user')->with('notification_success_destroy', 'Data berhasil dihapus. Terima kasih.');
     }
 
     public function edit($id) {
-        $data["user"] = UsersModel::find($id);
+        $data["user"] = User::find($id);
 
-		    return view('form', $data);
+		return view('form', $data);
     }
 }
