@@ -82,7 +82,7 @@ class UserController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-		$dataUpdate['password_confirmation'] = Hash::make($dataUpdate['password_confirmations']);
+		$dataUpdate['password_confirmation'] = Hash::make($dataUpdate['password_confirmation']);
 	    $dataUpdate['usertype'] = 2;
 
 		if (!$user->update($dataUpdate)) {
