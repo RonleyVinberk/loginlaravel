@@ -99,8 +99,8 @@ class UserController extends Controller
         return redirect('user')->with('notification_success_destroy', 'Data berhasil dihapus. Terima kasih.');
     }
 
-    public function edit($id) {
-        $data["user"] = User::find($id);
+    public function edit(User $user) {
+        $data["user"] = $user;
 
 		return view('form', $data);
     }
