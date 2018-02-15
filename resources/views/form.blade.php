@@ -49,19 +49,19 @@
 						<div class="form-group row">
 							<label for="name" class="col-sm-3 col-form-label">Nama Lengkap</label>
 							<div class="col-sm-5">
-								<input type="text" name="name" class="form-control" id="name" placeholder="Masukkan Nama Lengkap" value="{{$user->name}}" />
+								<input type="text" name="name" class="form-control" id="name" placeholder="Masukkan Nama Lengkap" value="{{old('name', $user->name)}}" />
 							</div>
 						</div>
 						<div class="form-group row">
 							<label for="username" class="col-sm-3 col-form-label">Nama Pengguna</label>
 							<div class="col-sm-4">
-								<input type="text" name="username" class="form-control" id="username" placeholder="Masukkan Nama Pengguna" value="{{$user->username}}" />
+								<input type="text" name="username" class="form-control" id="username" placeholder="Masukkan Nama Pengguna" value="{{old('username', $user->username)}}" />
 							</div>
 						</div>
 						   <div class="form-group row">
 							<label for="email" class="col-sm-3 col-form-label">Email</label>
 							<div class="col-sm-4">
-								<input type="email" name="email" class="form-control" id="email" placeholder="Masukkan Email" value="{{$user->email}}" />
+								<input type="email" name="email" class="form-control" id="email" placeholder="Masukkan Email" value="{{old('email', $user->email)}}" />
 							</div>
 						</div>
 						<div class="form-group row">
