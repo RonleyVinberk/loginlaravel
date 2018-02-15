@@ -38,20 +38,20 @@ class UserController extends Controller
 	        'password' => 'required|min:3'
 	    ];
 
-    	$inputData = $request->only('name', 'username', 'email', 'password');
+    	$dataInput = $request->only('name', 'username', 'email', 'password');
 
     	// Lakukan validasi
-    	$validator = Validator::make($inputData, $rules, $messages);
+    	$validator = Validator::make($dataInput, $rules, $messages);
 
     	// Redirect jika gagal validasi
 	    if ($validator->fails()) {
 			return redirect('user')->withErrors($validator)->withInput();
 	    }
 
-	    $inputData['password'] = Hash::make($inputData['password']);
-	    $inputData['usertype'] = 2;
+	    $dataInput['password'] = Hash::make($dataInput['password']);
+	    $dataInput['usertype'] = 2;
 
-	    if (!User::create($inputData)) {
+	    if (!User::create($dataInput)) {
 	        return back()->with('notification_error_store', 'Data gagal disimpan. Silahkan mencoba kembali! Terima kasih.');
 	    }
 
@@ -77,7 +77,7 @@ class UserController extends Controller
         // Lakukan validasi
         $validator = Validator::make($dataUpdate, $rules, $messages);
 
-        // Jika validasi gagal
+        // Redirect jika gagal validasi
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
