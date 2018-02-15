@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-    public function index(){
+    public function index() {
         $data["email"] = Auth::user()->email;
         $data["users"] = User::all()->where('usertype', '!=', 1);
         return view('user', $data);
@@ -24,6 +24,7 @@ class UserController extends Controller
         return redirect('/');
     }
 
+	// Store
 	public function store(Request $request) {
 	    $messages = [
 	        'required' => ':attribute tidak boleh kosong!',
@@ -58,6 +59,7 @@ class UserController extends Controller
     	return redirect('user')->with('notification_success_store', 'Data berhasil disimpan. Terima kasih.');
 	}
 
+	// Update
     public function update(Request $request, User $user) {
 		$messages = [
 			'required' => ':attribute tidak boleh kosong!',
@@ -92,6 +94,7 @@ class UserController extends Controller
 		return redirect('user')->with('notification_success_update', 'Data berhasil diganti. Terima kasih.');
     }
 
+	// Destroy
     public function destroy(User $user) {
 		if ($user->delete()) {
 			return redirect('user')->with('notification_success_destroy', 'Data berhasil dihapus. Terima kasih.');
@@ -99,6 +102,7 @@ class UserController extends Controller
         return redirect('user')->with('notification_success_destroy', 'Data berhasil dihapus. Terima kasih.');
     }
 
+	// Edit
     public function edit(User $user) {
         $data["user"] = $user;
 
